@@ -1,0 +1,67 @@
+npm i bcrypt cloudinary cookie-parser cors dotenv express express-fileupload jsonwebtoken mongoose validator
+bcrypt- to hash user password
+cloudinary - want the resumes to be in jpg form
+cookie-parser- jo cookies store hote hai for user authorization
+cors- to connect front end and back end
+express-fileupload- jab cloudinary pe upload karni hogi tab
+jswt(json web token)- created when user logs in
+validator- email validation
+
+npm run dev (for nodemon)
+cloudinary ki website par sign up. we will use its services
+using array in cors origin: since we might need to link to multiple frontends
+
+we will use vite here
+middleware in app.use(),order matters..... app.use(express.json()) - It parses incoming JSON requests and puts the parsed data in req.body.
+url encoded- This is a built-in middleware function in Express. It parses incoming requests with urlencoded payloads and is based on body-parser.
+Returns middleware that only parses urlencoded bodies and only looks at requests where the Content-Type header matches the type option. This parser accepts only UTF-8 encoding of the body and supports automatic inflation of gzip and deflate encodings.
+A new body object containing the parsed data is populated on the request object after the middleware (i.e. req.body), or an empty object ({}) if there was no body to parse, the Content-Type was not matched, or an error occurred. This object will contain key-value pairs, where the value can be a string or array (when extended is false), or any type (when extended is true).
+jwt secret key- can be anything random
+jwt expire= json web token kitne dino mai expire hona chahiye
+
+error 11000- db related, duplicate keys
+
+validate in schema takes in a function
+enum: [a,b,c],,,, only these values will be accepted
+encryption must be done for the password(hashing)
+in mongoose-Pre middleware functions are executed one after another, when each middleware calls next.
+method is used to add a pre-hook to the mongoose Schema methods and can be used to perform pre Schema method operations.
+
+bcrypt.hash(passw,number)   -> jitna bada number utna accha hashing
+
+userSchema.methods.<methodname> to create a method which would work on that schema
+yaha passw checking vala fn async kia hai kyuki comparison mai time toh lagega
+
+in userController, we will make key methods like login register logout
+
+module.exports= mongoose.model("User",userSchema) to export the model
+const User = require('../models/userSchema') to receive this model on some other file
+
+jwt token-  user register karte hi login ho jaye, vapas alag se login na karna pade, user authorize
+ho jaye aur ek token generate ho jaye.
+
+after the user sucessfully logs in, a cookie(token) is created
+options field - while creating tokens, this info is displayed in the cookie
+in logout, we delet the cookie named token, this can be done by using either empty string or null
+logout karne ke baad cookie gayab ho jayegi
+
+when we want to refer to documents of another model from some other model ->
+The "ref" option is what tells mongoose.js which model to use during population.
+we use id and ref
+postedBy:{
+        type: mongoose.Schema.ObjectId,
+        ref:"User"
+    }
+
+in postJob, postedBy vaisa ka vaisa likha hona chahiye else error ayega
+
+findByIdAndUpdate(id,body,options(optional))- takes 3 input parameters... id, body, and options,
+and replaces only those fields mentioned in the body
+kisi job ka expired update karne ke baad agar true karenge, toh vo show alljobs mai nahi ayegi
+
+we can directly delete a document with deleteOne() -> await job.deleteOne()
+
+in applicationschema  ->email:{
+        type: String,
+        validator:[validator.isEmail,"Please provide a valid email!"]
+    }
